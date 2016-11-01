@@ -1,0 +1,3 @@
+在linux命令行系统下，进入到makefile文件所在的目录，直接“make”命令即可生成可执行文件benchmark。
+然后按使用说明，输入相应的命令和参数值就可以生成网络图(network.dat)及其社区划分结果(community.dat)。
+这俩文件拿去用就行了。

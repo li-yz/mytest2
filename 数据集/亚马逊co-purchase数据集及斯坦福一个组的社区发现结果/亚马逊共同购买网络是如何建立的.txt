@@ -1,0 +1,3 @@
+Network was collected by crawling Amazon website. It is based on Customers Who Bought This Item Also Bought feature of the Amazon website. If a product i is frequently co-purchased with product j, the graph contains a directed edge from i to j.
+
+这个网络是通过网络爬虫从亚马逊网站爬取到的。基于亚马逊的“买了此商品的客户还买了。。。”这个功能。如果一个产品i经常与产品j一起被购买，则图中代表i,j的节点之间就建立一条边。 网络图中的节点代表的是商品。

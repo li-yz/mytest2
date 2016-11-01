@@ -1,0 +1,88 @@
+开始时，标签的数量等于节点的数目。
+并且标签是随机分配给节点的
+接下来开始标签的传播更新
+
+特别的，一个节点采用一种标签：在其邻居中普遍出现
+的标签，同时考虑全局的图中所有标签出现的频率
+
+举了个例子，图B中的灰色节点
+由于该节点与蓝色标签的group有特殊的连接，因此
+给它也定为蓝色标签。
+
+Results
+Summary
+
+为了产生已知社区结构的网络，用了下面的LFR benchimarks基准
+the Lancichinetti-Fortunato-Radicchi (LFR) benchmarks
+地址：http://sites.google.com/site/andrealancichinetti/files.
+
+
+细胞类型的聚类
+通过细胞表面的特殊标记组合或者是广泛的功能家族来区分（如树突细胞、
+吞噬细胞、自然杀伤细胞等）
+
+
+标注：
+文章前8页都是在介绍SpeakEasy的优点，在不同的数据集上的应用情况。
+在第1、2页大致介绍了该算法的主题思想：标签传播（使用相邻节点的
+标签信息，同时使用全局的网络图结构的信息）
+第9页涉及到了写具体的流程、评价标准、与其他算法的比对。
+
+回来重点看看第9、10、11页
+
+通过改进标签传播方法，SpeakEasy算法可以潜在的被改进很多。
+
+page 10
+Synthetic network benchmarks（人造神经网络的基准）
+为了鲁棒性很强的来衡量SpeakEasy在LFRbenchmark中的一系列网络结构上
+能够recover真正的聚类结果，我们调整了网络的特征（包括节点数，连接的密度，
+聚簇规模的分布，隔离，重叠社区的个数）。
+
+Algorithm overview
+提供了一个SpeakEasy算法的实现for非商业的应用，以伪代码的形式呈现（在补充
+材料中），总的来说，最开始每一个节点被随机分配了一个唯一的标签。然后在一定
+迭代次数内（通常小于30次），每个节点把自己的标签更新为与它连接的所有节点
+中最大特异性的节点的标签，也就是实际频率与期望频率之间有最大不同的标签。
+节点之间正的或者负权重的连接是非常容易并入SpeakEasy的，因为这样的连接
+提供一个特殊标签的流行程度的相应的上升或下降。标签传播更新的过程是所有的
+节点同时进行的。	虽然在同时更新的步骤中会有潜在的振荡状态出现，但是
+实际上在SpeakEasy算法中没有观察到这种现象。当出自最后几步的time-steps的
+标签被包含进期望标签与实际标签的计算当中的时候，聚类准确性提高。
+然而初始情况下，网络没有标签历史，因此我们人为的创建了一个随机相邻标签的
+缓存区。这个缓存区阻止了算法过早陷于均衡状态，同时提供了独特的初始条件，这些
+初始条件在多次对同一个数据集进行聚类的时候很有用。
+	
+典型的脱离社区与重叠社区
+像SpeakEasy这样的随机聚类算法，在不同初始条件下多次运行，会产生许多不同的
+划分（聚簇的集合）。	这种产生不同划分的能力很有用，因为这可以衡量每一个
+聚类的稳定性（Figure 5B）。  这在识别多社区节点的时候也很有用。  我们这样
+识别这些节点：当纵观多个划分，他们在两个稳定的社区间交替（在Figure 1 中显示
+的例子：附有红色和橙色标签的节点）。	然而，为了识别稳定的最终聚类（一致性
+聚类）而合并多个划分，和识别多社区节点都是一个数学挑战性的过程，潜在的可能
+要比聚类个体元素要难并且计算量更大。  虽然许多一致性聚类算法都尝试识别最优的划分，
+并把最有划分当作一致性聚类结果来用，我们以一种这样的方式来描述这些最终的聚类
+集合，这种方式代表的是这些划分的分布。  特别的，具有最高的平局adjusted Rand Index（ARI）
+的划分被选定为最具代表性的划分。  以这种方式识别出的聚簇更robust，因为与其他
+划分相比，伪划分会有比较低的ARI得分。  多社区节点被选择为这样的节点，
+这些节点在不止一个final clusters中出现，比用户设定的频率要高。（看补充材料）
+
+
+表格与配图阐明
+
+
+补充算法
+1.评价聚类结果的三个指标
+NMI:Normalized Mutual Information(NMI)常用在聚类中，度量2个聚类结果的
+相近程度。输入2个向量，每个向量的第i位表示第i个点归属的类。
+
+ARI：Adjusted rand index,The Rand index[1] or Rand measure (named after William M. Rand) in statistics,
+ and in particular in data clustering, is a measure of the similarity between two data clusterings.
+ A form of the Rand index may be defined that is adjusted for the chance grouping of elements,
+ this is the adjusted Rand index. From a mathematical standpoint, 
+Rand index is related to the accuracy, but is applicable even when class labels are not used.
+衡量两个聚类簇之间的相似性。
+
+F-Measure
+
+
+Consensus clustering has emerged as an important elaboration of the classical clustering problem. Consensus clustering, also called aggregation of clustering (or partitions), refers to the situation in which a number of different (input) clusterings have been obtained for a particular dataset and it is desired to find a single (consensus) clustering which is a better fit in some sense than the existing clusterings.[4][5] Consensus clustering is thus the problem of reconciling clustering information about the same data set coming from different sources or from different runs of the same algorithm. When cast as an optimization problem, consensus clustering is known as median partition, and has been shown to be NP-complete.[6] Consensus clustering for unsupervised learning is analogous to ensemble learning in supervised learning
